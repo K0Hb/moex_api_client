@@ -1,0 +1,4 @@
+bump:
+  file: lib/moex_api_client/version.rb
+  skip_ci: true
+
