@@ -4,7 +4,8 @@ begin
   require "debug" unless ENV["CI"]
 rescue LoadError
 end
-require "moex_api_client"
+require "moex_iss"
+require "webmock/rspec"
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].sort.each { |f| require f }
 
