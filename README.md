@@ -39,23 +39,41 @@ client = MoexIss.client
 
 ### Акции
 
-Для получения одной акций:
-```ruby
-client.stock(:sber) # => MoexIss::Market::Stock
-```
-Для получения всех акций:
+Для получения последних актульных данных:
+- Все акции
 ```ruby
 client.stocks # => MoexIss::Market::Stocks
 ```
 Получаем класс, по которому можно итерироваться а так же вызывать искомую ценную бумагу по ее `isin`
 ```ruby
-stocks.sber
+stocks.sber # => MoexIss::Market::Stock
 ```
-Экземпляр класса `MoexIss::Market::Stocks` отвечает на методы:
+- Одна Акция
 ```ruby
-%i[bid market_price_today market_price secid short_name lat_name board_id board_name isin prev_price prev_date response market_data]
+client.stock(:sber) # => MoexIss::Market::Stock
 ```
-где `response` содержит полный ответ от MOEX ISS, из которого можно получать доп.параметры
++ Для получения данные об исторических данных:
+```ruby
+client.stock(:sber, from: '2023-12-01', till: '2023-12-05') # => MoexIss::Market::History::Stocks
+```
+Есть возможность работы с коллекцией через дату:
+```ruby
+stocks = client.stock(:sber, from: '2023-12-01', till: '2023-12-05') # => MoexIss::Market::History::Stocks
+stocks['2023-12-03']  # => MoexIss::Market::History::Stock
+```
+Максимальное количесво дней: _100_
+
+Аргументы `from` и `till` можно использовать по одиночке
+
+
+Все экземпляры классов отвечает на метод `response`, который содержит полный ответ от MOEX ISS, из которого можно получать доп.параметры,
+так же у кажого класса свой набор спецефических методов для удобства работы с данными.
+```ruby
+# Пример
+client.stock(:sber).market_price # => 271.37
+client.stock(:sber).prev_date # => 2023-12-2
+...
+```
 
 
 ## Лицензия

@@ -4,6 +4,7 @@ module MoexIss
   class Error < StandardError
     ResponseSchemaError = Class.new(self)
     ResponseParseError = Class.new(self)
+    InvalidDateError = Class.new(self)
 
     ClientError = Class.new(self)
     ServerError = Class.new(self)

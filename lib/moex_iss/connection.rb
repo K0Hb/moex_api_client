@@ -36,7 +36,3 @@ module MoexIss
 end
 
 # CURENCY    https://iss.moex.com/iss/statistics/engines/currency/markets/selt/rates.json?iss.meta=off&iss.json=extended&iss.only=wap_rates
-
-# STOCKS ALL https://iss.moex.com/iss/engines/stock/markets/shares/boards/tqbr/securities.json?iss.meta=off&iss.json=extended&iss.only=securities,marketdata&marketdata.columns=BID,OPEN,CLOSEPRICE,LOW,HIGH,LAST,VALUE,MARKETPRICETODAY,MARKETPRICE,TIME&securities.columns=SECID,SHORTNAME,LATNAME,BOARDID,BOARDNAME,ISIN,PREVPRICE
-
-# STOCK ONE  https://iss.moex.com/iss/engines/stock/markets/shares/boards/tqbr/securities/sber.json?iss.meta=off&iss.json=extended&iss.only=securities,marketdata&marketdata.columns=BID,OPEN,CLOSEPRICE,LOW,HIGH,LAST,VALUE,MARKETPRICETODAY,MARKETPRICE,TIME&securities.columns=SECID,SHORTNAME,LATNAME,BOARDID,BOARDNAME,ISIN,PREVPRICE

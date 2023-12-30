@@ -21,9 +21,9 @@ module MoexIss
     end
 
     def respond_with_error(code, body)
-      raise(MoexIss::Error, body) unless MoexIss::Error::ERRORS.key?(code)
+      fail(MoexIss::Error, body) unless MoexIss::Error::ERRORS.key?(code)
 
-      raise MoexIss::Error::ERRORS[code], body
+      fail MoexIss::Error::ERRORS[code], body
     end
   end
 end

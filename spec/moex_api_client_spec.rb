@@ -37,8 +37,8 @@ RSpec.describe MoexIss do
     before { stub_request(:get, /#{MoexIss::Connection::BASE_URL}\/#{MoexIss::Client::STOCKS_ENDPOINT}.json.*/).to_return(status: 200, body: body) }
 
     it { expect(stocks).to be_a MoexIss::Market::Stocks }
-    it { expect(stocks.stocks_response).to be_a Array }
-    it { expect(stocks.stocks_response).to include({"securities" => Hash, "marketdata" => Hash}) }
+    it { expect(stocks.response).to be_a Array }
+    it { expect(stocks.response).to include({"securities" => Hash, "marketdata" => Hash}) }
     it { expect(stocks.count).to eq(4) }
     it { expect(stocks.methods).to include(:yndx, :astr, :kmaz, :sber) }
     it { expect(stocks.yndx).to be_a MoexIss::Market::Stock }
@@ -57,17 +57,49 @@ RSpec.describe MoexIss do
     it { expect(stock).to be_a MoexIss::Market::Stock }
     it { expect(stock.response).to be_a Hash }
     it { expect(stock.response).to include({"securities" => Hash, "marketdata" => Hash}) }
-    it { expect(stock.bid).to eq(271.86) }
-    it { expect(stock.market_price_today).to eq(270.3) }
-    it { expect(stock.market_price).to eq(271.37) }
-    it { expect(stock.secid).to eq("SBER") }
-    it { expect(stock.short_name).to eq("Сбербанк") }
-    it { expect(stock.lat_name).to eq("Sberbank") }
-    it { expect(stock.board_id).to eq("TQBR") }
-    it { expect(stock.board_name).to eq("Т+: Акции и ДР - безадрес.") }
-    it { expect(stock.isin).to eq("RU0009029540") }
-    it { expect(stock.prev_price).to eq(271.9) }
-    it { expect(stock.prev_date).to eq("2023-12-26") }
-    it { expect(stock.market_data).to eq(market_data) }
+    it { expect(stock.bid).to eq 271.86 }
+    it { expect(stock.market_price_today).to eq 270.3 }
+    it { expect(stock.market_price).to eq 271.37 }
+    it { expect(stock.secid).to eq "SBER" }
+    it { expect(stock.short_name).to eq "Сбербанк" }
+    it { expect(stock.lat_name).to eq "Sberbank" }
+    it { expect(stock.board_id).to eq "TQBR" }
+    it { expect(stock.board_name).to eq "Т+: Акции и ДР - безадрес." }
+    it { expect(stock.isin).to eq "RU0009029540" }
+    it { expect(stock.prev_price).to eq 271.9 }
+    it { expect(stock.prev_date).to eq "2023-12-26" }
+    it { expect(stock.market_data).to eq market_data }
+
+    context "historical_data_of_the_stock" do
+      let(:body) { File.read("#{File.dirname(__FILE__)}/fixtures/history_stock.js") }
+      let(:from) { "2023-12-27" }
+      let(:till) { "2023-12-29" }
+      let(:history_stocks) { subject.stock(iss, from: from, till: till) }
+
+      before { stub_request(:get, /#{MoexIss::Connection::BASE_URL}\/history\/#{MoexIss::Client::STOCKS_ENDPOINT}\/#{iss}.json.*/).to_return(status: 200, body: body) }
+
+      it { expect(history_stocks).to be_a MoexIss::Market::History::Stocks }
+      it { expect(history_stocks.response).to be_a Hash }
+      it { expect(history_stocks.response).to include("history" => Array) }
+      it { expect(history_stocks.count).to eq 3 }
+      it { expect(history_stocks[from]).to be_a MoexIss::Market::History::Stock }
+      it { expect(history_stocks[from]).to eq history_stocks.first }
+
+      context "history_stock" do
+        let(:history_stock) { subject.stock(iss, from: from, till: till)[from] }
+
+        it { expect(history_stock).to be_a MoexIss::Market::History::Stock }
+        it { expect(history_stock.response).to be_a Hash }
+        it { expect(history_stock.secid).to eq "SBER" }
+        it { expect(history_stock.short_name).to eq "Сбербанк" }
+        it { expect(history_stock.trade_date).to eq "2023-12-27" }
+        it { expect(history_stock.open).to eq 271.9 }
+        it { expect(history_stock.legal_close_price).to eq 271.55 }
+        it { expect(history_stock.high).to eq 272.59 }
+        it { expect(history_stock.low).to eq 270.85 }
+        it { expect(history_stock.volume).to eq 17214050 }
+        it { expect(history_stock.value).to eq 4676446141.7 }
+      end
+    end
   end
 end
