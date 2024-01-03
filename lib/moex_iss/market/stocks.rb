@@ -2,36 +2,23 @@
 
 module MoexIss
   module Market
-    class Stocks
-      include Enumerable
-
-      attr_reader :response
-
-      def initialize(response)
-        @response = response
-        @stocks_map = {}
-
-        create_instances_stock
+    class Stocks < Collection
+      def initialize(response, instance_class: MoexIss::Market::Stock)
+        super
       end
 
       def create_instances_stock
         @response.each do |data|
-          method = data["securities"]["SECID"].downcase.to_sym
+          method = method_name(data)
 
           setup_method(method, data)
         end
       end
 
-      def each
-        @stocks_map.values.each { |stock| yield stock }
-      end
-
       private
 
-      def setup_method(method, data)
-        @stocks_map[method] = Stock.new(data)
-
-        self.class.send(:define_method, method) { @stocks_map[method] }
+      def method_name(data)
+        data["securities"]["SECID"].downcase.to_sym
       end
     end
   end

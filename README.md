@@ -22,7 +22,7 @@ gem "moex_iss"
 
 Или установите его самостоятельно как:
 
-    $ gem install moex_api
+    $ gem install moex_iss
 
 ### Поддерживаемые Ruby версии
 
@@ -35,6 +35,18 @@ gem "moex_iss"
 
 ```ruby
 client = MoexIss.client
+```
+
+### Валюты
+Для получения последних актульных данных о курсах валют:
+```ruby
+currencies = client.currencies # => MoexIss::Market::Currencies
+
+currencies.map(&:short_name) # -> ["USDRUB_TOM", "EURRUB_TOM", "CNYRUB_TOM"]
+
+cny_rub = currencies.cny_rub # => MoexIss::Market::Currency
+cny_rub.price = 12.5762
+...
 ```
 
 ### Акции
@@ -65,9 +77,10 @@ stocks['2023-12-03']  # => MoexIss::Market::History::Stock
 
 Аргументы `from` и `till` можно использовать по одиночке
 
+### Обратите внимание
 
 Все экземпляры классов отвечает на метод `response`, который содержит полный ответ от MOEX ISS, из которого можно получать доп.параметры,
-так же у кажого класса свой набор спецефических методов для удобства работы с данными.
+так же у каждого класса свой набор специфических методов для удобства работы с данными.
 ```ruby
 # Пример
 client.stock(:sber).market_price # => 271.37

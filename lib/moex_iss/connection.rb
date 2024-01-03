@@ -34,5 +34,3 @@ module MoexIss
     end
   end
 end
-
-# CURENCY    https://iss.moex.com/iss/statistics/engines/currency/markets/selt/rates.json?iss.meta=off&iss.json=extended&iss.only=wap_rates

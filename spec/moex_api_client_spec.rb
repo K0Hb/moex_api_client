@@ -102,4 +102,34 @@ RSpec.describe MoexIss do
       end
     end
   end
+
+  context "currencies" do
+    let(:body) { File.read("#{File.dirname(__FILE__)}/fixtures/currencies.js") }
+    let(:currencies) { subject.currencies }
+
+    before { stub_request(:get, /#{MoexIss::Connection::BASE_URL}\/#{MoexIss::Client::CURRENCIES_ENDPOINT}.json.*/).to_return(status: 200, body: body) }
+
+    it { expect(currencies).to be_a MoexIss::Market::Currencies }
+    it { expect(currencies.response).to be_a Hash }
+    it { expect(currencies.response).to include({"wap_rates" => Array}) }
+    it { expect(currencies.count).to eq(3) }
+    it { expect(currencies.methods).to include(:usd_rub, :eur_rub, :cny_rub) }
+    it { expect(currencies.usd_rub).to be_a MoexIss::Market::Currency }
+    it { expect(currencies.usd_rub.short_name).to eq("USDRUB_TOM") }
+
+    context "currency" do
+      let(:currency) { subject.currencies.cny_rub }
+
+      it { expect(currency).to be_a MoexIss::Market::Currency }
+      it { expect(currency.response).to be_a Hash }
+      it { expect(currency.trade_date).to eq "2023-12-29" }
+      it { expect(currency.trade_time).to eq "15:29:54" }
+      it { expect(currency.price).to eq 12.5762 }
+      it { expect(currency.secid).to eq "CNYRUB_TOM" }
+      it { expect(currency.short_name).to eq "CNYRUB_TOM" }
+      it { expect(currency.last_top_rev_price).to eq 0.0987 * -1 }
+      it { expect(currency.nominal).to eq 1 }
+      it { expect(currency.decimals).to eq 4 }
+    end
+  end
 end

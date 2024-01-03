@@ -6,15 +6,16 @@ module MoexIss
     include MoexIss::Hendler
 
     STOCKS_ENDPOINT = "engines/stock/markets/shares/boards/tqbr/securities"
+    CURRENCIES_ENDPOINT = "statistics/engines/currency/markets/selt/rates"
     STANDARD_PARAMS = {
       "iss.json" => "extended",
-      "iss.only" => "securities,marketdata",
       "iss.meta" => "off"
     }
 
     def stocks
       endpoint = "#{STOCKS_ENDPOINT}.json"
       params = STANDARD_PARAMS
+      params["iss.only"] = "securities,marketdata"
 
       raw_response = get(endpoint, params)
 
@@ -26,10 +27,21 @@ module MoexIss
 
       endpoint = "#{STOCKS_ENDPOINT}/#{isin}.json"
       params = STANDARD_PARAMS
+      params["iss.only"] = "securities,marketdata"
 
       raw_response = get(endpoint, params)
 
       MoexIss::Market::Stock.new(handle_response(raw_response))
+    end
+
+    def currencies
+      endpoint = "#{CURRENCIES_ENDPOINT}.json"
+      params = STANDARD_PARAMS
+      params["iss.only"] = "wap_rates"
+
+      raw_response = get(endpoint, params)
+
+      MoexIss::Market::Currencies.new(handle_response(raw_response))
     end
 
     private
