@@ -10,7 +10,7 @@ module MoexIss
       def initialize(response, instance_class: Security)
         @response = response
         @instance_class = instance_class
-        @stocks_map = {}
+        @collection_map = {}
 
         create_instances
       end
@@ -24,7 +24,7 @@ module MoexIss
       end
 
       def each
-        @stocks_map.values.each { |stock| yield stock }
+        @collection_map.values.each { |stock| yield stock }
       end
 
       private
@@ -34,9 +34,9 @@ module MoexIss
       end
 
       def setup_method(method, data)
-        @stocks_map[method] = @instance_class.new(data)
+        @collection_map[method] = @instance_class.new(data)
 
-        self.class.send(:define_method, method) { @stocks_map[method] }
+        self.class.send(:define_method, method) { @collection_map[method] }
       end
     end
   end

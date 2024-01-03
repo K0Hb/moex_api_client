@@ -7,14 +7,6 @@ module MoexIss
         super
       end
 
-      def create_instances_stock
-        @response.each do |data|
-          method = method_name(data)
-
-          setup_method(method, data)
-        end
-      end
-
       private
 
       def method_name(data)

@@ -50,8 +50,6 @@ RSpec.describe MoexIss do
     let(:body) { File.read("#{File.dirname(__FILE__)}/fixtures/stock.js") }
     let(:stock) { subject.stock(iss) }
 
-    let(:market_data) { {"CLOSEPRICE" => nil, "HIGH" => 272.59, "LAST" => 271.88, "LOW" => 271.05, "OPEN" => 271.9, "SYSTIME" => "2023-12-27 16:23:59", "VALUE" => 5437.6} }
-
     before { stub_request(:get, /#{MoexIss::Connection::BASE_URL}\/#{MoexIss::Client::STOCKS_ENDPOINT}\/#{iss}.json.*/).to_return(status: 200, body: body) }
 
     it { expect(stock).to be_a MoexIss::Market::Stock }
@@ -68,7 +66,12 @@ RSpec.describe MoexIss do
     it { expect(stock.isin).to eq "RU0009029540" }
     it { expect(stock.prev_price).to eq 271.9 }
     it { expect(stock.prev_date).to eq "2023-12-26" }
-    it { expect(stock.market_data).to eq market_data }
+    it { expect(stock.close_price).to be_nil }
+    it { expect(stock.high).to eq 272.59 }
+    it { expect(stock.low).to eq 271.05 }
+    it { expect(stock.open).to eq 271.9 }
+    it { expect(stock.last).to eq 271.88 }
+    it { expect(stock.value).to eq 5437.6 }
 
     context "historical_data_of_the_stock" do
       let(:body) { File.read("#{File.dirname(__FILE__)}/fixtures/history_stock.js") }
